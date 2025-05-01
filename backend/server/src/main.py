@@ -62,3 +62,14 @@ async def compose(
             clothing_item_img_file,
         ],
     )
+
+from fastapi import Query
+import subprocess
+
+class RecommendationResponse(BaseModel):
+    recommendation: str
+
+@app.get("/recommendation", response_model=RecommendationResponse)
+async def get_recommendation(query: str = Query(..., description="Clothing recommendation query")):
+    result = subprocess.run(["python", "./../../../mcp/mcp.py", query], capture_output=True, text=True)
+    return {"recommendation": result.stdout}
