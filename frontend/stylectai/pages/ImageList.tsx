@@ -3,7 +3,7 @@ import * as React from 'react';
 import {Style} from "@/lib/types";
 import {Button} from "@/components/ui/button";
 
-export default function TitlebarImageList(props) {
+export default function TitlebarImageList(props:any) {
   return (
     <>
               <h2 className="text-2xl font-bold mb-4 text-center">
