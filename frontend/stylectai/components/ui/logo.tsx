@@ -7,7 +7,7 @@ const Logo = () => {
          <Image
             src="/logo.png"
             alt="Logo"
-            width={40}
+            width={210}
             height={40}
           />
       {/* <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white shadow-md group-hover:rotate-12 transition-transform">
