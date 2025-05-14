@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import Logo from "./ui/logo";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
+import ChatInterface from "@/pages/session_test";
 
 const Navbar = () => {
   return (
@@ -14,6 +15,12 @@ const Navbar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <a href="/" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
               Home
+            </a>
+            <a href="/HomeWithRecommendation" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              Home with Chatbot
+            </a>
+            <a href="/session_test" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
+              Test Chatbot
             </a>
             <a href="/categories" className="text-sm font-medium text-foreground hover:text-primary transition-colors">
               Categories
