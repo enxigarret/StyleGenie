@@ -19,43 +19,43 @@ interface Message {
   timestamp: string;
 }
 
-interface TaskResponse {
-  achievements: string[];
-  next_steps: string;
-  user_feedback_required: boolean;
-  markdown_media_portal: string;
-  tools_required_next: string[];
-  important_notes: string;
-  task_finished: boolean;
-  step_failed: boolean;
-}
+// interface TaskResponse {
+//   achievements: string[];
+//   next_steps: string;
+//   user_feedback_required: boolean;
+//   markdown_media_portal: string;
+//   tools_required_next: string[];
+//   important_notes: string;
+//   task_finished: boolean;
+//   step_failed: boolean;
+// }
 
 const Index = () => {
 
-  const [showRecommendations, setShowRecommendations] = useState(true);
+  const [showRecommendations, setShowRecommendations] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleGetRecommendations = (e: React.FormEvent) => {
     console.log(searchQuery)
     e.preventDefault();
-    if (!searchQuery.trim()) return;
-    sendMessage(searchQuery);
+    if (!searchQuery.trim() && uploadedImage?.length == 0) return;
+    sendMessage(uploadedImage[0]);
     setShowRecommendations(true);
   };
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const [searchQuery, setSearchQuery] = useState("Classy boardroom casual outfit");
+  const [searchQuery, setSearchQuery] = useState("");
   const [taskId, setTaskId] = useState<string | null>(null);
-  const [taskResponse, setTaskResponse] = useState<TaskResponse | null>(null);
+  const [uploadedImage, setUploadedImage] = React.useState([]);
+  // const [taskResponse, setTaskResponse] = useState<TaskResponse | null>(null);
 
   //Image part
-  const onChange = (uploadedImage: React.SetStateAction<never[]>) => {
+  const onChange = (uploadImage) => {
     // data for submit
-    setUploadedImage(uploadedImage);
+    setUploadedImage(uploadImage);
   };
 
-  const [uploadedImage, setUploadedImage] = React.useState([]);
 
   const onMessage = (event) => {
       const data = JSON.parse(event.data);
@@ -69,9 +69,9 @@ const Index = () => {
           timestamp: new Date().toISOString()
         }]);
               // we need to check messages and convert them to recommedations
-    dispatch(addSingleRecommendations([messages.content]))
-      } else if (data.achievements) {
-        setTaskResponse(data);
+        dispatch(addSingleRecommendations([messages.content]))
+      // } else if (data.achievements) {
+      //   setTaskResponse(data);
       }
     };
 
@@ -115,7 +115,6 @@ const Index = () => {
               {/*<ImageUpload />*/}
               <div className="w-full max-w-xl mx-auto mb-3">
       <ImageUploading
-          multiple
           value={uploadedImage}
           onChange={onChange}
           maxNumber={1}
@@ -125,6 +124,7 @@ const Index = () => {
           imageList,
           onImageUpload,
           onImageRemove,
+          onImageRemoveAll,
           isDragging,
           dragProps,
         }) => (
@@ -134,7 +134,7 @@ const Index = () => {
               <Camera className="h-4 w-4 text-primary" />
               <button
                 style={isDragging ? { color: 'red' } : undefined}
-                onClick={onImageUpload}
+                onClick={() => {onImageRemoveAll(); onImageUpload()}}
                 {...dragProps}>
                 Click or Drop here
               </button>
@@ -159,6 +159,7 @@ const Index = () => {
               {/*<RecommendButton onClick={handleGetRecommendations} />*/}
               <div className="w-full max-w-xl mx-auto mb-4 text-center">
                 <Button type="submit"
+                  disabled={!searchQuery.trim() && uploadedImage?.length == 0}
                   onClick={handleGetRecommendations}
                   className="px-6 py-2 text-sm font-medium shadow-sm hover:shadow-md transition-all bg-primary hover:bg-primary/90"
                 >
