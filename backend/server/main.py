@@ -3,7 +3,7 @@ import io
 import logging
 import os
 import dotenv
-from fastapi import FastAPI, Query, middleware
+from fastapi import FastAPI, Query, middleware, WebSocket,WebSocketDisconnect
 from fastapi.middleware import cors
 from pydantic import BaseModel
 from src.ai.img_to_img import ImgToImg
@@ -73,6 +73,30 @@ async def compose(
             clothing_item_img_file,
         ],
     )
+
+# create a websocket manager 
+class ConnectionManager:
+    def __init__(self):
+        self.active_connections: Dict[str, WebSocket] = {}
+
+    async def connect(self, websocket: WebSocket, session_id: str):
+        await websocket.accept()
+        self.active_connections[session_id] = websocket
+
+    def disconnect(self, session_id: str):
+        if session_id in self.active_connections:
+            del self.active_connections[session_id]
+
+manager = ConnectionManager()
+
+@app.websocket("/ws/{session_id}")
+async def websocket_endpoint(websocket: WebSocket, session_id: str):
+    await manager.connect(websocket, session_id)
+    try:
+        # Handle WebSocket communication
+        pass
+    except WebSocketDisconnect:
+        manager.disconnect(session_id)
 
 
 @app.get("/test_vector_db", response_model=RecommendationResponse)
